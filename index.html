@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shortform Studio — 첫 화면</title>
+<style>
+:root {
+  color-scheme: light dark;
+  --site-primary: #7357F6;
+  --site-on-primary: #FFFFFF;
+  --site-secondary: #EDE9FF;
+  --site-on-secondary: #32216F;
+  --site-background: #F7F6FC;
+  --site-on-background: #201D2B;
+  --site-font-body: Inter, Pretendard, "Noto Sans KR", system-ui, sans-serif;
+  --site-font-heading: Inter, Pretendard, "Noto Sans KR", system-ui, sans-serif;
+  --site-heading-scale: 1;
+  --site-spacing-scale: 1;
+  --site-radius-scale: 1;
+  --site-decoration-opacity: 1;
+  --surface: light-dark(#FFFFFF, #211F2A);
+  --surface-soft: light-dark(#F0EDFF, #302A45);
+  --muted: light-dark(#777386, #B4AFC4);
+  --line: light-dark(#E5E1EF, #403B4F);
+  --field: light-dark(#FFFFFF, #292633);
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: var(--site-font-body); background: var(--site-background); color: var(--site-on-background); }
+button, input, textarea { font: inherit; }
+#app {
+  min-height: 100vh;
+  width: 100%;
+  border-radius: 0;
+  background-color: var(--site-background);
+  color: var(--site-on-background);
+  overflow: hidden;
+}
+.topbar { display:flex; align-items:center; justify-content:space-between; max-width:1120px; margin:auto; padding: calc(26px * var(--site-spacing-scale)) 28px; }
+.brand { display:flex; align-items:center; gap:11px; font-weight:800; letter-spacing:-.6px; }
+.logo { display:grid; place-items:center; width:34px; height:34px; border-radius:11px; background:var(--site-primary); color:white; font-size:18px; }
+.top-label { font-size:12px; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:8px 12px; }
+main { max-width:1120px; margin:0 auto; padding:36px 28px 70px; }
+.hero { text-align:center; max-width:720px; margin:0 auto 38px; }
+.eyebrow { display:inline-flex; align-items:center; gap:8px; color:var(--site-primary); font-size:12px; font-weight:800; letter-spacing:1.7px; }
+.eyebrow:before { content:""; width:22px; height:2px; background:currentColor; }
+h1 { font-family:var(--site-font-heading); font-size:clamp(32px,5vw,54px); line-height:1.15; letter-spacing:-2px; margin:18px 0 16px; font-weight:850; }
+h1 span { color:var(--site-primary); }
+.subtitle { color:var(--muted); font-size:16px; line-height:1.8; margin:0 auto; max-width:540px; }
+.workspace { display:grid; grid-template-columns:minmax(0,1.12fr) minmax(280px,.88fr); gap:22px; align-items:stretch; }
+.panel { background:var(--surface); border:1px solid var(--line); border-radius:calc(24px * var(--site-radius-scale)); padding:clamp(22px,3vw,34px); box-shadow:0 14px 44px rgba(45,34,88,.045); }
+.panel-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:26px; }
+.step { color:var(--site-primary); background:var(--site-secondary); border-radius:10px; font-size:12px; font-weight:800; padding:8px 10px; white-space:nowrap; }
+h2 { font-size:21px; letter-spacing:-.6px; margin:0 0 8px; }
+.helper { color:var(--muted); font-size:13px; line-height:1.65; margin:0; }
+.tabs { display:grid; grid-template-columns:1fr 1fr; background:var(--surface-soft); padding:5px; border-radius:13px; gap:5px; margin:24px 0 22px; }
+.tab { border:0; background:transparent; color:var(--muted); padding:12px 8px; border-radius:9px; font-weight:700; cursor:pointer; transition:.18s; }
+.tab[aria-selected="true"] { background:var(--surface); color:var(--site-on-background); box-shadow:0 2px 8px rgba(20,15,40,.08); }
+label { display:block; font-size:13px; font-weight:750; margin-bottom:10px; }
+.field { width:100%; border:1px solid var(--line); border-radius:12px; background:var(--field); color:var(--site-on-background); padding:15px 16px; outline:none; transition:border .18s,box-shadow .18s; }
+.field:focus { border-color:var(--site-primary); box-shadow:0 0 0 3px color-mix(in srgb, var(--site-primary) 16%, transparent); }
+textarea.field { min-height:155px; resize:vertical; line-height:1.7; }
+.field::placeholder { color:var(--muted); }
+.input-note { color:var(--muted); font-size:12px; margin-top:9px; }
+.primary-btn { width:100%; border:0; border-radius:13px; padding:16px 18px; margin-top:23px; background:var(--site-primary); color:var(--site-on-primary); font-weight:800; cursor:pointer; display:flex; justify-content:center; align-items:center; gap:10px; transition:transform .15s, filter .15s; }
+.primary-btn:hover { filter:brightness(1.06); transform:translateY(-1px); }
+.primary-btn:focus-visible, .tab:focus-visible { outline:3px solid color-mix(in srgb, var(--site-primary) 45%, transparent); outline-offset:3px; }
+.status { min-height:20px; margin:12px 0 0; font-size:13px; color:var(--muted); line-height:1.5; }
+.status.error { color:#D94D63; }
+.preview-panel { background:var(--site-primary); color:#fff; position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; min-height:390px; }
+.preview-panel:before, .preview-panel:after { content:""; position:absolute; border:1px solid rgba(255,255,255,.14); border-radius:50%; pointer-events:none; opacity:var(--site-decoration-opacity); }
+.preview-panel:before { width:320px; height:320px; right:-140px; top:-110px; }
+.preview-panel:after { width:230px; height:230px; right:-95px; top:-65px; }
+.preview-content, .steps, .preview-footer { position:relative; z-index:1; }
+.preview-kicker { color:#DED7FF; font-size:11px; font-weight:800; letter-spacing:1.7px; }
+.preview-panel h2 { font-size:25px; line-height:1.35; margin:16px 0 12px; max-width:300px; }
+.preview-panel .helper { color:#E5E0FF; max-width:300px; }
+.steps { margin:28px 0; display:grid; gap:12px; }
+.step-row { display:flex; align-items:center; gap:13px; border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.09); padding:13px 14px; border-radius:14px; }
+.step-icon { display:grid; place-items:center; width:34px; height:34px; border-radius:10px; background:rgba(255,255,255,.16); font-size:16px; }
+.step-copy strong { display:block; font-size:13px; margin-bottom:4px; }
+.step-copy small { display:block; color:#E5E0FF; font-size:11px; }
+.preview-footer { border-top:1px solid rgba(255,255,255,.22); padding-top:17px; font-size:12px; color:#E5E0FF; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.dot { width:7px; height:7px; border-radius:50%; background:#A8F0CD; display:inline-block; margin-right:7px; }
+footer { text-align:center; color:var(--muted); font-size:12px; padding:0 24px 30px; }
+@media (max-width:760px) {
+  .topbar { padding:20px 20px; }
+  main { padding:28px 18px 48px; }
+  .workspace { grid-template-columns:1fr; }
+  .hero { margin-bottom:28px; }
+  .preview-panel { min-height:360px; }
+}
+@media (prefers-reduced-motion:reduce) { * { transition:none !important; scroll-behavior:auto !important; } }
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="brand"><span class="logo" aria-hidden="true">✳</span><span>Shortform Studio</span></div>
+    <span class="top-label">콘텐츠 제작 워크스페이스</span>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="eyebrow">CONTENT, REIMAGINED</div>
+      <h1>긴 콘텐츠를<br><span>짧고 선명하게</span></h1>
+      <p class="subtitle">만들고 싶은 콘텐츠를 입력하고, 숏폼 제작의 첫 단계를 시작하세요.</p>
+    </section>
+    <section class="workspace" aria-label="콘텐츠 입력">
+      <div class="panel">
+        <div class="panel-heading">
+          <div>
+            <h2>콘텐츠 시작하기</h2>
+            <p class="helper">콘텐츠를 가져올 방식을 선택해 주세요.</p>
+          </div>
+          <span class="step">STEP 01</span>
+        </div>
+        <div class="tabs" role="tablist" aria-label="입력 방식">
+          <button class="tab" id="urlTab" type="button" role="tab" aria-selected="true" aria-controls="urlPane">URL로 입력</button>
+          <button class="tab" id="textTab" type="button" role="tab" aria-selected="false" aria-controls="textPane">텍스트 입력</button>
+        </div>
+        <form id="contentForm" novalidate>
+          <div id="urlPane" role="tabpanel" aria-labelledby="urlTab">
+            <label for="contentUrl">콘텐츠 URL</label>
+            <input class="field" id="contentUrl" type="url" placeholder="https://example.com/content" autocomplete="url">
+            <p class="input-note">공유 가능한 콘텐츠 주소를 입력해 주세요.</p>
+          </div>
+          <div id="textPane" role="tabpanel" aria-labelledby="textTab" hidden>
+            <label for="contentText">콘텐츠 본문</label>
+            <textarea class="field" id="contentText" placeholder="숏폼으로 만들 콘텐츠를 여기에 붙여넣으세요."></textarea>
+            <p class="input-note">핵심 내용을 포함한 텍스트를 입력해 주세요.</p>
+          </div>
+          <button class="primary-btn" type="submit">다음 단계로 <span aria-hidden="true">→</span></button>
+          <p class="status" id="status" role="status" aria-live="polite">입력 방식을 선택하고 콘텐츠를 입력해 주세요.</p>
+        </form>
+      </div>
+      <aside class="panel preview-panel">
+        <div class="preview-content">
+          <div class="preview-kicker">YOUR IDEA, IN MOTION</div>
+          <h2>하나의 콘텐츠에서<br>새로운 가능성으로</h2>
+          <p class="helper">콘텐츠를 정리하고, 장면을 구성하고, 영상 초안으로 발전시키는 흐름을 준비합니다.</p>
+        </div>
+        <div class="steps">
+          <div class="step-row"><span class="step-icon" aria-hidden="true">↗</span><span class="step-copy"><strong>01 · 콘텐츠 입력</strong><small>URL 또는 텍스트</small></span></div>
+          <div class="step-row"><span class="step-icon" aria-hidden="true">✦</span><span class="step-copy"><strong>02 · 초안 구성</strong><small>콘텐츠를 영상 흐름으로</small></span></div>
+          <div class="step-row"><span class="step-icon" aria-hidden="true">▣</span><span class="step-copy"><strong>03 · 결과 확인</strong><small>다음 단계에서 이어서 작업</small></span></div>
+        </div>
+        <div class="preview-footer"><span><span class="dot"></span>프로토타입 화면</span><span>PREVIEW</span></div>
+      </aside>
+    </section>
+  </main>
+  <footer>초기 화면 시안 · 실제 콘텐츠 분석 및 영상 생성은 연결되어 있지 않습니다.</footer>
+</div>
+<script>
+(() => {
+  const urlTab = document.getElementById('urlTab');
+  const textTab = document.getElementById('textTab');
+  const urlPane = document.getElementById('urlPane');
+  const textPane = document.getElementById('textPane');
+  const urlInput = document.getElementById('contentUrl');
+  const textInput = document.getElementById('contentText');
+  const status = document.getElementById('status');
+  let mode = 'url';
+
+  function setMode(nextMode) {
+    mode = nextMode;
+    const isUrl = mode === 'url';
+    urlTab.setAttribute('aria-selected', String(isUrl));
+    textTab.setAttribute('aria-selected', String(!isUrl));
+    urlPane.hidden = !isUrl;
+    textPane.hidden = isUrl;
+    status.textContent = '입력 방식을 선택하고 콘텐츠를 입력해 주세요.';
+    status.classList.remove('error');
+    (isUrl ? urlInput : textInput).focus();
+  }
+  urlTab.addEventListener('click', () => setMode('url'));
+  textTab.addEventListener('click', () => setMode('text'));
+  document.getElementById('contentForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+    const value = mode === 'url' ? urlInput.value.trim() : textInput.value.trim();
+    if (!value) {
+      status.textContent = mode === 'url' ? '콘텐츠 URL을 입력해 주세요.' : '콘텐츠 본문을 입력해 주세요.';
+      status.classList.add('error');
+      (mode === 'url' ? urlInput : textInput).focus();
+      return;
+    }
+    if (mode === 'url') {
+      try {
+        const parsed = new URL(value);
+        if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error('invalid');
+      } catch {
+        status.textContent = '올바른 URL 형식인지 확인해 주세요.';
+        status.classList.add('error');
+        urlInput.focus();
+        return;
+      }
+    }
+    status.textContent = '입력이 확인되었습니다. 현재 시안에는 실제 분석 기능이 연결되어 있지 않습니다.';
+    status.classList.remove('error');
+  });
+})();
+</script>
+</body>
+</html>
